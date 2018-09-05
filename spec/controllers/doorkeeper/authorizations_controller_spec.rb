@@ -19,6 +19,16 @@ describe Doorkeeper::AuthorizationsController, type: :controller do
     Doorkeeper::OAuth::Authorization::URIBuilder.uri_with_query(application.redirect_uri, params)
   end
 
+  describe '#show' do
+    it 'renders the authorization code if logged in' do
+     get :show, {
+       code: 'code'
+     }
+
+     expect(response).to be_successful
+    end
+  end
+
   describe '#resource_owner_authenticator' do
     it 'renders the authorization form if logged in' do
       authorize!
