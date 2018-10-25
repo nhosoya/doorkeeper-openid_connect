@@ -26,6 +26,12 @@ EOL
     # redirect_to new_user_session_url
   end
 
+  select_account do |resource_owner, return_to|
+    # Example implementation:
+    # store_location_for resource_owner, return_to
+    # redirect_to select_account_url
+  end
+
   subject do |resource_owner, application|
     # Example implementation:
     # resource_owner.id

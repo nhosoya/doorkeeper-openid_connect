@@ -43,8 +43,7 @@ module Doorkeeper
             when 'consent' then
               matching_tokens_for_resource_owner(owner).map(&:destroy)
             when 'select_account' then
-              # TODO: let the user implement this
-              raise Errors::AccountSelectionRequired
+              select_account_of_resource_owner(owner) if owner
             else
               raise Errors::InvalidRequest
             end
@@ -80,6 +79,19 @@ module Doorkeeper
           Doorkeeper::AccessToken.authorized_tokens_for(pre_auth.client.id, owner.id).select do |token|
             Doorkeeper::AccessToken.scopes_match?(token.scopes, pre_auth.scopes, pre_auth.client.scopes)
           end
+        end
+
+        def select_account_of_resource_owner(owner)
+          return_to = URI.parse(request.path)
+          return_to.query = request.query_parameters.tap do |params|
+            params['prompt'] = params['prompt'].to_s.sub(/\bselect_account\s*\b/, '').strip
+            params.delete('prompt') if params['prompt'].blank?
+          end.to_query
+
+          instance_exec owner, return_to.to_s,
+                        &Doorkeeper::OpenidConnect.configuration.select_account
+
+          raise Errors::AccountSelectionRequired unless performed?
         end
       end
     end

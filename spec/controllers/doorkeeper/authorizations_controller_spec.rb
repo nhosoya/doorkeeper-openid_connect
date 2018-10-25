@@ -128,13 +128,7 @@ describe Doorkeeper::AuthorizationsController, type: :controller do
       it 'renders an account_selection_required error' do
         authorize! prompt: 'select_account'
 
-        error_params = {
-          'error' => 'account_selection_required',
-          'error_description' => 'The authorization server requires end-user account selection'
-        }
-
-        expect(response.status).to redirect_to build_redirect_uri(error_params)
-        expect(JSON.parse(response.body)).to eq(error_params)
+        expect(response.status).to redirect_to('/select_account')
       end
     end
 
