@@ -45,6 +45,10 @@ tuQKYki41JvYqPobcq/rLE/AM7PKJftW35nqFuj0MrsUwPacaVwKBf5J
     redirect_to '/reauthenticate'
   end
 
+  select_account do |_resource_owner, _return_to|
+    redirect_to '/select_account'
+  end
+
   subject do |resource_owner|
     resource_owner.id
   end
